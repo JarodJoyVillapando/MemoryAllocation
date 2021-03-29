@@ -1,8 +1,3 @@
-/*Jarod-Joy Villapando
- *CPSC 245
- *Memory Allocation
- */
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -17,15 +12,11 @@ public class MemAlloc
 		checkForArgumentsLength(args);
 		ArrayList<Integer> holes = checkFirstCommandArgumentForFileInput(args);
 		ArrayList<Integer> processes = checkSecondCommandArgumentForFileInput(args);
-		String chosenAlgorithm = checkThirdArgumentForAlgo(args);
-		printFilesBeingUsed(args);
-		printInitalConditionsForHoles(holes);
-		printInitialConditionsForProcesses(processes);
-		executeChosenAlgorithm(chosenAlgorithm, holes, processes); 
-	
-		System.exit(0);
-		
-
+		String chosenAlgorithm = checkThirdArgumentForAlgo(args); 
+		printFilesBeingUsed(args); 
+		printInitalConditionsForHoles(holes); 
+		printInitialConditionsForProcesses(processes); 
+		executeChosenAlgorithm(chosenAlgorithm, holes, processes);
 	}
 	
 	
@@ -33,10 +24,11 @@ public class MemAlloc
 	{
 		for(int i = 0; i < args.length; i++)
 		{
-			if(args[i].equalsIgnoreCase("H"))
+			if(args[i].equalsIgnoreCase("-H") || args[i].equalsIgnoreCase("H"))
 			{
-				System.out.println("memAlloc holeFile procFile first|best|worst");
-				System.out.println("* indicates change was made to memory hole");
+				System.out.printf("\nmemAlloc holeFile procFile first|best|worst\n");
+				System.out.printf("* indicates change was made to memory hole\n");
+				System.exit(1);
 			}
 		}
 	}
@@ -46,14 +38,14 @@ public class MemAlloc
 	{
 		if(args.length > 3)
 		{
-			System.err.println("** ERROR: Too many command line args");
-			System.exit(1);
+			System.err.printf("\n** ERROR: Too many command line args\n");
+			System.exit(2);
 		}
-		
+
 		if(args.length < 3)
 		{
-			System.err.println("** ERROR: Too few command line args");
-			System.exit(2);
+			System.err.printf("\n** ERROR: Too few command line args\n");
+			System.exit(3);
 		}
 	}
 	
@@ -61,7 +53,7 @@ public class MemAlloc
 	public static ArrayList<Integer> checkFirstCommandArgumentForFileInput(String[] args)
 	{
 		Scanner scanner;
-		ArrayList<Integer> holes = new ArrayList<>();
+		ArrayList<Integer> holes = new ArrayList<>(); 
 		
 		try
 		{
@@ -70,7 +62,7 @@ public class MemAlloc
 			
 			while(scanner.hasNext())
 			{
-				int currentLine;
+				int currentLine; 
 				try
 				{
 					currentLine = Integer.parseInt(scanner.nextLine());
@@ -78,8 +70,8 @@ public class MemAlloc
 				}
 				catch(Exception exc)
 				{
-					System.err.println("** ERROR: Contents of " + args[0] + " must be numerical");
-					System.exit(4);
+					System.err.printf("\n** ERROR: Contents of %s must be numerical.\n", args[0]);
+					System.exit(5);
 				}
 				
 			}
@@ -87,8 +79,8 @@ public class MemAlloc
 		}
 		catch(FileNotFoundException e)
 		{
-			System.err.println("** ERROR: " + args[0] + " could not be found");
-			System.exit(3);
+			System.err.printf("\n** ERROR: %s could not be found.\n", args[0]);
+			System.exit(4);
 		}
 	
 		return holes;
@@ -108,26 +100,26 @@ public class MemAlloc
 			while(scanner.hasNextLine())
 			{
 				String[] currentLine = scanner.nextLine().split(" +");
-				String position = currentLine[0].substring(1);
-				String processesSize = currentLine[1];
+				String processesSize = currentLine[1]; 
 				int numericalProcessSize;
+				
 				try
 				{
-					numericalProcessSize = Integer.parseInt(processesSize);
-					processes.add(numericalProcessSize);
+					numericalProcessSize = Integer.parseInt(processesSize); 
+					processes.add(numericalProcessSize); 
 				}
 				catch(Exception exce)
 				{
-					System.err.println("** ERROR: Contents of " + args[1] + " must be numerical");
-					System.exit(6);
+					System.err.printf("\n** ERROR: Contents of %s must be numerical.\n", args[1]);
+					System.exit(7);
 				}
 			}
 			scanner.close();
 		}
 		catch(FileNotFoundException e)
 		{
-			System.err.println("** ERROR: " + args[0] + " could not be found");
-			System.exit(5);
+			System.err.printf("\n** ERROR: %s could not be found.\n", args[1]);
+			System.exit(6);
 		}
 		
 		return processes;
@@ -139,8 +131,8 @@ public class MemAlloc
 		if(!(args[2].equalsIgnoreCase("first") || (args[2].equalsIgnoreCase("best")
 				|| (args[2].equalsIgnoreCase("worst")))))
 		{
-			System.err.println("** ERROR: incorrect third argument");
-			System.exit(7);
+			System.err.printf("\n** ERROR: Third argument must be memory algorithm\n");
+			System.exit(8);
 		}
 		
 		return args[2];
@@ -149,7 +141,7 @@ public class MemAlloc
 	
 	public static void printFilesBeingUsed(String[] args)
 	{
-		System.out.printf("Using files \"%s\" and \"%s\".\n", args[0], args[1]);
+		System.out.printf("\nUsing files \"%s\" and \"%s\".\n", args[0], args[1]);
 	}
 	
 	
@@ -157,6 +149,7 @@ public class MemAlloc
 	{
 		System.out.printf("\nInitial Conditions\n\n");
 		System.out.printf("Holes\n");
+		
 		for(int i = 0; i < holes.size(); i++)
 		{
 			System.out.printf(" H%d: %5d K\n", i, holes.get(i));
@@ -167,11 +160,13 @@ public class MemAlloc
 	public static void printInitialConditionsForProcesses(ArrayList<Integer> processes)
 	{
 		System.out.printf("\nProcs\n");
+		
 		for(int i = 0; i < processes.size(); i++)
 		{
 			System.out.printf(" P%d: %5d K\n", i + 1, processes.get(i));
 		}
 	}
+	
 	
 	public static void executeChosenAlgorithm(String chosenAlgorithm, ArrayList<Integer> holes, 
 			ArrayList<Integer> processes)
@@ -180,9 +175,8 @@ public class MemAlloc
 		{
 			System.out.printf("\nFirstFit\n");
 			System.out.printf("\nAfter allocations have been made\n");
-			executeFirstFitAlgorithm(holes, processes);
+			executeFirstFitAlgorithm(holes, processes); 
 		}
-		
 		else if(chosenAlgorithm.equalsIgnoreCase("best"))
 		{
 			System.out.printf("\nBestFit\n");
@@ -199,9 +193,9 @@ public class MemAlloc
 	
 	public static void executeFirstFitAlgorithm(ArrayList<Integer> holes, ArrayList<Integer> processes)
 	{
-		int newValue = 0;
-		ArrayList <Integer> holesIndexes = new ArrayList<>();
-		ArrayList <Integer> allocationResults = new ArrayList<>();
+		int newValue = 0; 
+		ArrayList <Integer> holesIndexes = new ArrayList<>(); 
+		ArrayList <Integer> allocationResults = new ArrayList<>(); 
 		
 		for(int i = 0; i < processes.size(); i++)
 		{
@@ -209,22 +203,22 @@ public class MemAlloc
 			{
 				if(holes.get(j) >= processes.get(i))
 				{
-					newValue = holes.get(j) - processes.get(i);
-					allocationResults.add(newValue);
-					holes.set(j, newValue);
-					holesIndexes.add(j);
-					break;
+					newValue = holes.get(j) - processes.get(i); 
+					allocationResults.add(newValue); 
+					holes.set(j, newValue); 
+					holesIndexes.add(j); 
+					break; 
 				}
 			}
 		}
-		printAlgorithmAllocationResults(holes, holesIndexes, allocationResults);
+		printAlgorithmAllocationResults(holes, holesIndexes, allocationResults); 
 	}
 	
 	
 	public static void executeBestFitAlgorithm(ArrayList<Integer> holes, ArrayList<Integer> processes)
 	{
 		int newValue = 0;
-		int bestFitIndex = 0;
+		int bestFitIndex = 0; 
 		ArrayList <Integer> holesIndexes = new ArrayList<>();
 		ArrayList <Integer> allocationResults = new ArrayList<>();
 		
@@ -257,7 +251,7 @@ public class MemAlloc
 		printAlgorithmAllocationResults(holes, holesIndexes, allocationResults);
 	}
 	
-	
+
 	public static void executeWorstFitAlgorithm(ArrayList<Integer> holes, ArrayList<Integer> processes)
 	{
 		int newValue = 0;
@@ -308,5 +302,7 @@ public class MemAlloc
 		{
 			System.out.printf(" P%d:   @ H%d: %5d k\n", j + 1, holesIndexes.get(j), allocationResults.get(j));
 		}
+		
+		System.exit(0);
 	}
 }
