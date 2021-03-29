@@ -1,0 +1,126 @@
+/*Jarod-Joy Villapando
+ *CPSC 245
+ *Memory Allocation
+ */
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class MemAlloc 
+{
+
+	public static void main(String[] args) 
+	{
+		checkArgumentForHelp(args);
+		checkForArgumentsLength(args);
+		ArrayList<Integer> holes = checkFirstCommandArgumentForFileInput(args);
+		ArrayList<Integer> processes = checkSecondCommandArgumentForFileInput(args);
+		checkThirdArgumentForAlgo(args);
+		System.exit(0);
+		
+
+	}
+	
+	public static void checkArgumentForHelp(String[] args)
+	{
+		for(int i = 0; i < args.length; i++)
+		{
+			if(args[i].equalsIgnoreCase("H"))
+			{
+				System.out.println("memAlloc holeFile procFile first|best|worst");
+				System.out.println("* indicates change was made to memory hole");
+			}
+		}
+	}
+	
+	public static void checkForArgumentsLength(String[] args)
+	{
+		if(args.length > 3)
+		{
+			System.err.println("** ERROR: Too many command line args");
+			System.exit(1);
+		}
+		
+		if(args.length < 3)
+		{
+			System.err.println("** ERROR: Too few command line args");
+			System.exit(2);
+		}
+	}
+	
+	public static ArrayList<Integer> checkFirstCommandArgumentForFileInput(String[] args)
+	{
+		Scanner scanner;
+		ArrayList<Integer> holes = new ArrayList<>();
+		
+		try
+		{
+			File file = new File(args[0]);
+			scanner = new Scanner(file);
+			
+			while(scanner.hasNext())
+			{
+				int currentLine;
+				try
+				{
+					currentLine = Integer.parseInt(scanner.nextLine());
+					holes.add(currentLine);
+				}
+				catch(Exception exc)
+				{
+					System.err.println("** ERROR: Content of" + args[0] + " must be numerical");
+				}
+				
+			}
+			scanner.close();
+		}
+		catch(FileNotFoundException e)
+		{
+			System.err.println("** ERROR: " + args[0] + " could not be found");
+			System.exit(3);
+		}
+	
+		return holes;
+	}
+	
+	public static ArrayList<Integer> checkSecondCommandArgumentForFileInput(String[] args)
+	{
+		ArrayList<Integer> processes = new ArrayList<>();
+		Scanner scanner;
+		
+		try
+		{
+			File file = new File(args[1]);
+			scanner = new Scanner(file);
+			
+			while(scanner.hasNextLine())
+			{
+				String[] currentLine = scanner.nextLine().split(" +");
+				String position = currentLine[0].substring(1);
+				String processesSize = currentLine[1];
+				processes.add(Integer.parseInt(processesSize));
+			}
+			scanner.close();
+		}
+		catch(FileNotFoundException e)
+		{
+			System.err.println("** ERROR: " + args[0] + " could not be found");
+			System.exit(3);
+		}
+		
+		return processes;
+	}
+	
+	public static void checkThirdArgumentForAlgo(String[] args)
+	{
+		if(!(args[2].equalsIgnoreCase("first") || (args[2].equalsIgnoreCase("best")
+				|| (args[2].equalsIgnoreCase("worst")))))
+		{
+			System.err.println("** ERROR: incorrect third argument");
+			System.exit(4);
+		}
+		
+	}
+}
